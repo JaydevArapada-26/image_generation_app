@@ -228,15 +228,15 @@ export default function GeneratePage() {
             transition={{ delay: 0.2 }}
             className="flex items-center gap-3 rounded-2xl border border-white/5 bg-white/[0.02] px-5 py-3"
           >
-            {/* Gemini logo placeholder */}
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-violet-500">
-              <span className="text-[10px] font-bold text-white">G</span>
+            {/* NVIDIA logo placeholder */}
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-green-500 to-emerald-600">
+              <span className="text-[10px] font-bold text-white">N</span>
             </div>
             <span className="text-sm font-mono text-white/40">
-              gemini-2.5-flash-preview-05-20
+              black-forest-labs/flux.1-schnell
             </span>
-            <span className="ml-auto rounded-full bg-violet-500/10 border border-violet-500/20 px-2.5 py-0.5 text-xs text-violet-400 font-mono">
-              nano-banana
+            <span className="ml-auto rounded-full bg-green-500/10 border border-green-500/20 px-2.5 py-0.5 text-xs text-green-400 font-mono">
+              nvidia-nim
             </span>
           </motion.div>
 
