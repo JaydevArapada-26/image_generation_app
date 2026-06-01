@@ -6,7 +6,7 @@ import {
 import sharp from "sharp";
 
 const API_KEY = process.env.GEMINI_API_KEY ?? "";
-const MODEL_ID = "gemini-2.5-flash-image";
+const MODEL_ID = "gemini-2.5-flash";
 
 function getClient() {
   if (!API_KEY) {
@@ -38,19 +38,63 @@ export async function analyzeImages(
   base64Images: string[],
   prompt: string
 ): Promise<string> {
-  const genAI = getClient();
-  const model = genAI.getGenerativeModel({ model: MODEL_ID });
+  const nvidiaKey = process.env.NVIDIA_API_KEY ?? "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";
+  
+  if (!nvidiaKey) {
+    throw new Error("NVIDIA_API_KEY is not set.");
+  }
 
-  const parts: Part[] = [
-    ...base64Images.map((img) => base64ToPart(img)),
-    { text: prompt },
+  const endpoint = "https://integrate.api.nvidia.com/v1/chat/completions";
+  
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const contentParts: any[] = [
+    { type: "text", text: prompt }
   ];
 
-  const result: GenerateContentResult = await model.generateContent({
-    contents: [{ role: "user", parts }],
+  for (const base64 of base64Images) {
+    const dataUrl = base64.startsWith("data:") ? base64 : `data:image/png;base64,${base64}`;
+    contentParts.push({
+      type: "image_url",
+      image_url: {
+        url: dataUrl
+      }
+    });
+  }
+
+  const payload = {
+    model: "meta/llama-3.2-11b-vision-instruct",
+    messages: [
+      {
+        role: "user",
+        content: contentParts
+      }
+    ],
+    max_tokens: 512,
+    temperature: 1.00,
+    top_p: 1.00
+  };
+
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${nvidiaKey}`
+    },
+    body: JSON.stringify(payload)
   });
 
-  return result.response.text();
+  if (!res.ok) {
+    const errText = await res.text();
+    throw new Error(`NVIDIA NIM Vision API error ${res.status}: ${errText}`);
+  }
+
+  const data = await res.json();
+  const content = data.choices?.[0]?.message?.content;
+  if (!content) {
+    throw new Error("No choices or message content returned from NVIDIA NIM Vision API.");
+  }
+
+  return content;
 }
 
 // ─── Image Generation ─────────────────────────────────────────────────────────
