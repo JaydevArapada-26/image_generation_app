@@ -92,10 +92,12 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Update generation row with parameters
-      await supabase
+      // Insert generation row with parameters
+      const { error: insertError } = await supabase
         .from("generations")
-        .update({
+        .insert({
+          id: generationId,
+          user_id: user.id,
           status: "queued",
           product_group: group,
           product_subgroup: subgroup,
@@ -106,8 +108,10 @@ export async function POST(request: NextRequest) {
           detailed_marketing_text: detailedMarketingText ?? null,
           user_preferences: userPreferences ?? null,
           logo_position: logoPosition ?? null,
-        })
-        .eq("id", generationId);
+        });
+      if (insertError) {
+        throw insertError;
+      }
     }
 
     // Enqueue BullMQ job

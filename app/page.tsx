@@ -7,23 +7,23 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen flex flex-col justify-between overflow-hidden bg-[#08090B] text-white">
+    <div className="relative min-h-screen flex flex-col justify-between overflow-hidden bg-[#050608] text-white">
       {/* Immersive gravitational particle system background */}
       <GravityBackground />
 
       {/* SVG Grain / Noise Overlay for premium texture */}
-      <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.015] mix-blend-overlay">
+      <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.012] mix-blend-overlay">
         <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
           <filter id="noiseFilter">
-            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch" />
           </filter>
           <rect width="100%" height="100%" filter="url(#noiseFilter)" />
         </svg>
       </div>
 
       {/* Glowing Ambient Orbs */}
-      <div className="pointer-events-none absolute -top-40 -left-40 h-[600px] w-[600px] rounded-full bg-violet-600/10 blur-[150px]" />
-      <div className="pointer-events-none absolute top-1/2 -right-40 h-[600px] w-[600px] rounded-full bg-purple-600/10 blur-[150px]" />
+      <div className="pointer-events-none absolute -top-40 -left-40 h-[600px] w-[600px] rounded-full bg-violet-600/5 blur-[150px]" />
+      <div className="pointer-events-none absolute top-1/2 -right-40 h-[600px] w-[600px] rounded-full bg-purple-600/5 blur-[150px]" />
 
       {/* Navigation Header */}
       <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6 sm:px-8">
@@ -41,13 +41,13 @@ export default function Home() {
 
         <div className="flex items-center gap-4">
           <Link href="/login">
-            <button className="text-sm font-medium text-white/75 hover:text-white transition-colors px-4 py-2">
+            <button className="text-sm font-medium text-white/60 hover:text-white transition-colors px-4 py-2">
               Sign In
             </button>
           </Link>
           <Link href="/login">
             <motion.button
-              whileHover={{ scale: 1.02, y: -1 }}
+              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="rounded-xl bg-white/5 border border-white/10 hover:border-white/20 px-5 py-2 text-sm font-semibold text-white shadow-lg transition-all"
             >
@@ -66,9 +66,9 @@ export default function Home() {
           className="space-y-8"
         >
           {/* Announcement pill */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/5 px-4 py-1.5 text-xs text-violet-300 backdrop-blur-md">
+          <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/5 px-4 py-1.5 text-xs text-violet-300 backdrop-blur-md">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>Next-Gen Product Visualisation Engine</span>
+            <span>Next-Gen NVIDIA NIM Visual AI Engine</span>
           </div>
 
           {/* Majestic Hero Typography */}
@@ -77,8 +77,8 @@ export default function Home() {
             <span className="block gradient-text">Beyond gravity.</span>
           </h1>
 
-          <p className="max-w-2xl mx-auto text-base sm:text-lg lg:text-xl text-white/50 leading-relaxed font-sans">
-            Instantly transform raw product photos into high-converting, studio-grade commercial visuals using Google Gemini and our custom AI composition layers.
+          <p className="max-w-2xl mx-auto text-base sm:text-lg lg:text-xl text-white/50 leading-relaxed font-sans font-light">
+            Instantly transform raw product photos into high-converting, studio-grade commercial visuals using Black Forest Labs FLUX.1-schnell and Llama 3.2 Vision.
           </p>
 
           {/* CTA Buttons */}
@@ -139,7 +139,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="relative z-10 py-8 border-t border-white/5 text-center text-xs text-white/30 font-sans">
-        <p>© {new Date().getFullYear()} Antigravity. Built with Next.js & Google Gemini.</p>
+        <p>© {new Date().getFullYear()} Antigravity. Powered by NVIDIA NIM visual microservices.</p>
       </footer>
     </div>
   );

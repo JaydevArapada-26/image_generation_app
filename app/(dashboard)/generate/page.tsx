@@ -83,9 +83,59 @@ export default function GeneratePage() {
     setGenStartTime(Date.now());
 
     try {
-      // In demo mode (no Supabase): generate a mock ID and call API
       const mockId = crypto.randomUUID();
       setGenerationId(mockId);
+
+      // Upload images & insert reference rows to Supabase if not in demo mode
+      const { createClient } = await import("@/lib/supabase/client");
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      const isDemo = !session;
+
+      if (!isDemo && session.user) {
+        console.log("[generate] Uploading product images to Supabase storage...");
+        for (const f of files) {
+          const fileExtension = f.file.name.split('.').pop() ?? 'png';
+          const storagePath = `${session.user.id}/${mockId}/${f.id}.${fileExtension}`;
+          
+          // Upload file
+          const { error: uploadErr } = await supabase.storage
+            .from("products")
+            .upload(storagePath, f.file, { contentType: f.file.type });
+          if (uploadErr) throw uploadErr;
+
+          // Record in DB
+          const { error: dbErr } = await supabase
+            .from("uploaded_images")
+            .insert({
+              generation_id: mockId,
+              storage_path: `products/${storagePath}`,
+              type: "product"
+            });
+          if (dbErr) throw dbErr;
+        }
+
+        // Upload logo if set
+        if (logoBase64) {
+          console.log("[generate] Uploading company logo to Supabase storage...");
+          const logoBlob = await (await fetch(logoBase64)).blob();
+          const storagePath = `${session.user.id}/${mockId}/logo.png`;
+
+          const { error: uploadErr } = await supabase.storage
+            .from("logos")
+            .upload(storagePath, logoBlob, { contentType: "image/png" });
+          if (uploadErr) throw uploadErr;
+
+          const { error: dbErr } = await supabase
+            .from("uploaded_images")
+            .insert({
+              generation_id: mockId,
+              storage_path: `logos/${storagePath}`,
+              type: "logo"
+            });
+          if (dbErr) throw dbErr;
+        }
+      }
 
       const body = {
         generationId: mockId,
@@ -142,10 +192,10 @@ export default function GeneratePage() {
       {/* Page content */}
       <div className="relative z-10 flex flex-col lg:flex-row gap-0 min-h-screen">
         {/* ─── Left Sidebar: Settings ─── */}
-        <aside className="w-full lg:w-[380px] lg:min-h-screen border-r border-white/5 bg-[#0c0e13]/80 backdrop-blur-xl flex-shrink-0">
-          <div className="sticky top-0 max-h-screen overflow-y-auto p-6 space-y-8">
+        <aside className="w-full lg:w-[420px] lg:min-h-screen border-r border-white/5 bg-[#0c0e13]/80 backdrop-blur-xl flex-shrink-0">
+          <div className="sticky top-0 max-h-screen overflow-y-auto p-8 lg:p-10 space-y-10">
             <div>
-              <h2 className="font-syne text-xs font-semibold uppercase tracking-widest text-white/30 mb-4">
+              <h2 className="font-syne text-[11px] font-bold uppercase tracking-widest text-white/30 mb-5">
                 Style
               </h2>
               <StyleSelector
@@ -159,7 +209,7 @@ export default function GeneratePage() {
             <div className="border-t border-white/5" />
 
             <div>
-              <h2 className="font-syne text-xs font-semibold uppercase tracking-widest text-white/30 mb-4">
+              <h2 className="font-syne text-[11px] font-bold uppercase tracking-widest text-white/30 mb-5">
                 Settings
               </h2>
               <SettingsPanel
@@ -186,17 +236,17 @@ export default function GeneratePage() {
         </aside>
 
         {/* ─── Main Area ─── */}
-        <main className="flex-1 p-6 lg:p-8 space-y-8">
+        <main className="flex-1 p-8 lg:p-12 space-y-10 lg:space-y-12">
           {/* Page Header */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <h1 className="font-syne text-3xl font-bold text-white">
+            <h1 className="font-syne text-3xl lg:text-4xl font-bold text-white tracking-tight">
               Generate Visual
             </h1>
-            <p className="text-sm text-white/40 mt-1">
+            <p className="text-sm lg:text-base text-white/40 mt-2">
               Upload your product · select a style · generate a commercial visual
             </p>
           </motion.div>
@@ -206,9 +256,9 @@ export default function GeneratePage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="glass-card p-6 space-y-5"
+            className="glass-card p-8 lg:p-10 space-y-6 lg:space-y-8"
           >
-            <h2 className="font-syne text-sm font-semibold uppercase tracking-widest text-white/30">
+            <h2 className="font-syne text-xs lg:text-sm font-semibold uppercase tracking-widest text-white/30">
               Product Images
             </h2>
             <ImageUploadZone

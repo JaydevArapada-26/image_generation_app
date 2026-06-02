@@ -65,23 +65,26 @@ const PLANS = [
 
 export default function BillingPage() {
   return (
-    <div className="relative min-h-screen p-8">
+    <div className="relative min-h-screen p-6 lg:p-8 bg-[#050608]">
+      {/* Ambient glowing blobs */}
+      <div className="pointer-events-none absolute top-0 left-1/4 h-[500px] w-[500px] rounded-full bg-violet-600/5 blur-[120px]" />
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-12 text-center"
+        className="mb-12 text-center relative z-10"
       >
         <h1 className="font-syne text-4xl font-bold text-white mb-3">
           Choose Your Plan
         </h1>
-        <p className="text-white/40 max-w-md mx-auto">
-          Scale your product visualisation with Antigravity
+        <p className="text-white/40 max-w-md mx-auto text-sm font-light leading-relaxed font-outfit">
+          Scale your product visual content with Antigravity hosted visual microservices.
         </p>
       </motion.div>
 
       {/* Plan Cards */}
-      <div className="grid gap-6 max-w-5xl mx-auto lg:grid-cols-3">
+      <div className="grid gap-6 max-w-5xl mx-auto lg:grid-cols-3 relative z-10">
         {PLANS.map((plan, i) => {
           const Icon = plan.icon;
           return (
@@ -90,13 +93,13 @@ export default function BillingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className={`relative glass-card p-7 flex flex-col ${
-                plan.popular ? "ring-2 ring-violet-500/40" : ""
+              className={`relative glass-card p-8 flex flex-col bg-[#0a0b10]/60 border border-white/5 shadow-2xl ${
+                plan.popular ? "ring-2 ring-violet-500/30" : ""
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-1 text-xs font-semibold text-white shadow-lg">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+                  <span className="rounded-full bg-gradient-to-r from-violet-600 to-purple-600 px-4 py-1 text-[10px] uppercase tracking-wider font-bold text-white shadow-lg shadow-violet-500/20">
                     Most Popular
                   </span>
                 </div>
@@ -105,48 +108,48 @@ export default function BillingPage() {
               {/* Plan header */}
               <div className="mb-6">
                 <div
-                  className={`inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br ${plan.gradient} mb-4`}
+                  className={`inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${plan.gradient} mb-4 shadow-lg`}
                 >
                   <Icon className="h-5 w-5 text-white" />
                 </div>
-                <h2 className="font-syne text-2xl font-bold text-white">
+                <h2 className="font-syne text-2xl font-bold text-white leading-none">
                   {plan.name}
                 </h2>
-                <p className="text-sm text-white/40 mt-1">{plan.description}</p>
+                <p className="text-sm text-white/40 mt-2 font-light font-outfit leading-relaxed">{plan.description}</p>
               </div>
 
               {/* Price */}
-              <div className="mb-6">
+              <div className="mb-6 border-b border-white/5 pb-6">
                 <div className="flex items-baseline gap-1">
                   <span className="font-syne text-4xl font-bold text-white">
                     {plan.price}
                   </span>
-                  <span className="text-white/40 text-sm">{plan.period}</span>
+                  <span className="text-white/40 text-sm font-light font-outfit">{plan.period}</span>
                 </div>
-                <p className="text-xs text-violet-400 mt-1">{plan.credits}</p>
+                <p className="text-xs text-violet-400 mt-1.5 font-mono">{plan.credits}</p>
               </div>
 
               {/* Features */}
-              <ul className="flex-1 space-y-3 mb-8">
+              <ul className="flex-1 space-y-3.5 mb-8">
                 {plan.features.map((f) => (
-                  <li key={f} className="flex items-center gap-2.5 text-sm text-white/70">
+                  <li key={f} className="flex items-center gap-2.5 text-sm text-white/70 font-light font-outfit">
                     <Check className="h-4 w-4 text-violet-400 shrink-0" />
-                    {f}
+                    <span>{f}</span>
                   </li>
                 ))}
               </ul>
 
               {/* CTA with Coming Soon overlay */}
-              <div className="relative">
+              <div className="relative mt-auto">
                 <button
                   disabled
                   className={`
-                    w-full rounded-xl py-3 text-sm font-semibold transition-all
+                    w-full rounded-xl py-3.5 text-sm font-semibold transition-all cursor-not-allowed
                     ${plan.popular
-                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white"
+                      ? "bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-lg shadow-violet-500/20"
                       : plan.active
-                      ? "border border-white/10 bg-white/[0.03] text-white/50"
-                      : "bg-gradient-to-r from-fuchsia-600 to-violet-600 text-white"
+                      ? "border border-white/10 bg-white/[0.02] text-white/50"
+                      : "bg-gradient-to-r from-fuchsia-600 to-violet-600 text-white shadow-lg shadow-fuchsia-500/20"
                     }
                   `}
                   id={`plan-${plan.id}-btn`}
@@ -159,9 +162,9 @@ export default function BillingPage() {
                   <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    className="absolute inset-0 flex items-center justify-center rounded-xl bg-[#111318]/80 backdrop-blur-sm"
+                    className="absolute inset-0 flex items-center justify-center rounded-xl bg-[#0a0b10]/90 backdrop-blur-sm"
                   >
-                    <span className="rounded-full bg-violet-500/20 border border-violet-500/30 px-3 py-1 text-xs font-medium text-violet-300">
+                    <span className="rounded-full bg-violet-500/10 border border-violet-500/20 px-4 py-1.5 text-xs font-semibold text-violet-300 tracking-wide font-outfit">
                       Coming Soon
                     </span>
                   </motion.div>
@@ -176,7 +179,7 @@ export default function BillingPage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.5 }}
-        className="text-center text-xs text-white/20 mt-10"
+        className="text-center text-xs text-white/20 mt-12 font-light font-outfit"
       >
         Payments powered by Stripe · Secure & encrypted · Cancel anytime
       </motion.p>
